@@ -1,0 +1,15 @@
+POST http://localhost:3001/api/notes 
+Content-Type: application/json
+
+{
+    "content": "esto es una nueva nota"
+}
+
+###
+
+POST http://localhost:3001/api/notes 
+Content-Type: application/json
+
+{
+    "content": "esto es una nueva nota"
+}

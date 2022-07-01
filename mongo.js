@@ -26,23 +26,23 @@ const noteSchema = new Schema({
 
 const Note = model("Note", noteSchema);
 
-// Note.find({}).then((result) => {
-//   console.log(result);
-//   mongoose.connection.close();
-// });
+Note.find({}).then((result) => {
+  console.log(result);
+  mongoose.connection.close();
+});
 
-// const note = new Note({
-//   content: "Mongodb es increible",
-//   date: new Date(),
-//   important: true,
-// });
+const note = new Note({
+  content: "Mongodb es increible",
+  date: new Date(),
+  important: true,
+});
 
-// note
-//   .save()
-//   .then((result) => {
-//     console.log(result);
-//     mongoose.connection.close();
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
+note
+  .save()
+  .then((result) => {
+    console.log(result);
+    mongoose.connection.close();
+  })
+  .catch((err) => {
+    console.log(err);
+  });

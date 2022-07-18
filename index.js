@@ -4,6 +4,7 @@ const express = require("express");
 const app = express();
 const Note = require("./models/Note");
 const logger = require("./loggerMiddlewares");
+const { response } = require("express");
 
 //middlewares//
 app.use(logger);
@@ -38,7 +39,21 @@ app.get("/api/notes/:id", (request, response, next) => {
     });
 });
 
-app.delete("/api/notes/:id", (request, response) => {
+app.put("/api/notes/:id", (request, response, next) => {
+  //Edita una nota
+  const { id } = request.params;
+  const note = request.body;
+  const newNoteInfo = {
+    content: note.content,
+    important: note.important,
+  };
+
+  Note.findByIdAndUpdate(id, newNoteInfo).then((result) => {
+    response.json(result);
+  });
+});
+
+app.delete("/api/notes/:id", (request, response, next) => {
   const { id } = request.params;
   Note.findByIdAndRemove(id)
     .then((result) => {

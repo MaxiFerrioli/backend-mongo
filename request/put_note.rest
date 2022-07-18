@@ -2,6 +2,6 @@ PUT http://localhost:3001/api/notes/62bf1bec82abd9c95fbaf580
 Content-Type: application/json
 
 {
-    "content": "AUXILIO",
+    "content": "Nota actualizada con exito!",
     "important": true
 }

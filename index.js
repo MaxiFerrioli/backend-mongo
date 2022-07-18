@@ -5,12 +5,12 @@ const app = express();
 const Note = require("./models/Note");
 const logger = require("./loggerMiddlewares");
 const { response } = require("express");
+const notFound = require("./middleware/notFound");
+const handleErrors = require("./middleware/handleErrors");
 
 //middlewares//
 app.use(logger);
 app.use(express.json());
-
-let notes = [];
 
 app.get("/", (request, response) => {
   response.send("<h1>Hello World</h1>");
@@ -40,29 +40,31 @@ app.get("/api/notes/:id", (request, response, next) => {
 });
 
 app.put("/api/notes/:id", (request, response, next) => {
-  //Edita una nota
+  //Actualiza/edita una nota
   const { id } = request.params;
   const note = request.body;
+
   const newNoteInfo = {
     content: note.content,
     important: note.important,
   };
-
-  Note.findByIdAndUpdate(id, newNoteInfo).then((result) => {
-    response.json(result);
-  });
+  Note.findByIdAndUpdate(id, newNoteInfo, { new: true })
+    .then((result) => {
+      response.json(result);
+    })
+    .catch((err) => next(err));
 });
 
 app.delete("/api/notes/:id", (request, response, next) => {
   const { id } = request.params;
   Note.findByIdAndRemove(id)
-    .then((result) => {
+    .then(() => {
       response.status(204).end();
     })
     .catch((error) => next(error));
 });
 
-app.post("/api/notes", (request, response) => {
+app.post("/api/notes", (request, response, next) => {
   const note = request.params;
 
   if (!note || !note.content) {
@@ -77,20 +79,16 @@ app.post("/api/notes", (request, response) => {
     important: note.import || false,
   });
 
-  newNote.save().then((savedNote) => {
-    response.json(savedNote);
-  });
+  newNote
+    .save()
+    .then((savedNote) => {
+      response.json(savedNote);
+    })
+    .catch((err) => next(err));
 });
 
-app.use((error, request, response, next) => {
-  console.log(error);
-
-  if (error.name === "CastError") {
-    response.status(400).send({ error: "id used is malformed" });
-  } else {
-    response.status(500).end();
-  }
-});
+app.use(notFound);
+app.use(handleErrors);
 
 const PORT = process.env.PORT || 3001;
 
